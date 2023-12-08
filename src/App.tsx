@@ -1,37 +1,24 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import FeaturedResponse from "./data/network/response/FeaturedResponse";
-import NetworkDataSourceImpl from "./data/network/datasource/NetworkDataSourceImpl";
-import Search from "./ui/component/search/Search";
-import Query, {defaultQuery} from "./data/entity/Query";
-import Image from "./data/entity/Image";
-import {useDebounce} from "use-debounce";
+import React from 'react';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {FeedScreen} from "./ui/screen/feed/FeedScreen";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
 
-    const [data, setData] = useState<Image | undefined>()
-    const [query, setQuery] = useState<Query>(defaultQuery)
-    const [debouncedQuery] = useDebounce(query, 1000)
-
-    const networkDataSource = useMemo(() => {
-        return new NetworkDataSourceImpl()
-    }, [])
-
-
-
-    useEffect(() => {
-        async function fetchData() {
-            const featuredResponse = await networkDataSource.searchImages(debouncedQuery);
-            setData(featuredResponse.images[0])
-        }
-
-        fetchData()
-    }, [networkDataSource, debouncedQuery])
 
     return (
         <div className="App">
-            <Search setQuery={setQuery} query={query}/>
+            <BrowserRouter>
+                <div className="container-fluid p-0">
+                    <Routes>
+                        <Route path="/" element={<FeedScreen />} />
+                        <Route path="/feed" element={<FeedScreen />} />
+                    </Routes>
+                </div>
+            </BrowserRouter>
 
-            <img src={data !== undefined ? data.representations.full : ""}/>
+
 
         </div>
     );
